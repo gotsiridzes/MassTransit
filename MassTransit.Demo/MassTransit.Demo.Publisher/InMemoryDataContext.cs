@@ -1,4 +1,6 @@
-﻿namespace MassTransit.Api;
+﻿using MassTransit.Demo.Publisher.Models;
+
+namespace MassTransit.Demo.Publisher;
 
 public class InMemoryDataContext
 {

@@ -1,6 +1,7 @@
-﻿using MassTransit.Api.Events;
+﻿using MassTransit.Demo.Common.Events;
+using MassTransit.Demo.Publisher.Models;
 
-namespace MassTransit.Api;
+namespace MassTransit.Demo.Publisher;
 
 public static class Ext
 {
