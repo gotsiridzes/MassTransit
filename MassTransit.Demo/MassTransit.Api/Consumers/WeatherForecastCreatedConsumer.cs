@@ -1,17 +1,12 @@
-﻿namespace MassTransit.Api.Consumers
+﻿using MassTransit.Api.Events;
+
+namespace MassTransit.Api.Consumers;
+
+// ReSharper disable once ClassNeverInstantiated.Global
+public class WeatherForecastCreatedConsumer(InMemoryDataContext dataContext) : IConsumer<WeatherForecastCreated>
 {
-    public class WeatherForecastCreatedConsumer : IConsumer<WeatherForecastCreated>
-    {
-        private readonly InMemoryDataContext _dataContext;
-
-        public WeatherForecastCreatedConsumer(InMemoryDataContext dataContext)
-        {
-            _dataContext = dataContext;
-        }
-
-        public async Task Consume(ConsumeContext<WeatherForecastCreated> context)
-        {
-            _dataContext.Create(context.Message.MapToDbModel());
-        }
-    }
+	public async Task Consume(ConsumeContext<WeatherForecastCreated> context)
+	{
+		dataContext.Create(context.Message.MapToDbModel());
+	}
 }

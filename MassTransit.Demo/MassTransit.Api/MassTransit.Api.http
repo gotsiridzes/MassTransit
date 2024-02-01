@@ -2,14 +2,4 @@
 
 GET {{MassTransit.Api_HostAddress}}/weatherforecast/
 Accept: application/json
-
-
-POST {{MassTransit.Api_HostAddress}}/weatherforecast/
-Content-Type: application/json
-
-{
-
-}
-
-
 ###

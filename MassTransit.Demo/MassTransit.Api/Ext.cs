@@ -1,4 +1,6 @@
-﻿namespace MassTransit.Api;
+﻿using MassTransit.Api.Events;
+
+namespace MassTransit.Api;
 
 public static class Ext
 {

@@ -1,14 +1,11 @@
 using MassTransit;
 using MassTransit.Api;
 using MassTransit.Api.Consumers;
-using MassTransit.Transports;
+using MassTransit.Api.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<InMemoryDataContext>();
-
 builder.Services.AddMassTransit(config =>
 {
 	config.SetKebabCaseEndpointNameFormatter();
@@ -28,17 +25,13 @@ builder.Services.AddMassTransit(config =>
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
 
 var summaries = new[]
 {
 	"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapPost("/generateforecasts", (IPublishEndpoint publishEndpoint) =>
+app.MapGet("/weatherforecast", (IPublishEndpoint publishEndpoint) =>
 {
 	var forecast = Enumerable.Range(1, 5)
 		.Select(index =>
@@ -49,28 +42,22 @@ app.MapPost("/generateforecasts", (IPublishEndpoint publishEndpoint) =>
 				summaries[Random.Shared.Next(summaries.Length)]))
 		.ToArray();
 
-	//publishEndpoint.PublishBatch(
-	//	forecast
-	//		.Select(x => new WeatherForecastCreated(
+	publishEndpoint.PublishBatch(forecast.Select(x => new WeatherForecastCreated(x.Date, x.TemperatureC, x.Summary)));
+
+	//var first = forecast.First();
+	//publishEndpoint.Publish(new WeatherForecastCreated(
 	//			Guid.NewGuid(),
-	//			x.Date,
-	//			x.TemperatureC,
-	//			x.Summary)));
-	
-	var first = forecast.First();
-	publishEndpoint.Publish(new WeatherForecastCreated(
-				Guid.NewGuid(),
-				first.Date,
-				first.TemperatureC,
-				first.Summary));
+	//			first.Date,
+	//			first.TemperatureC,
+	//			first.Summary));
 
 	return Results.Accepted();
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-app.MapGet("/weatherforecast", (InMemoryDataContext data) => data.ListWeatherForecasts())
-.WithName("ListWeatherForecast")
-.WithOpenApi();
+//app.MapGet("/weatherforecast", (InMemoryDataContext data) => data.ListWeatherForecasts())
+//.WithName("ListWeatherForecast")
+//.WithOpenApi();
 
 app.Run();
